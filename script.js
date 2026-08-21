@@ -1,367 +1,609 @@
-// ===============================
-// BUILDENSE - SCRIPT.JS
-// ===============================
+// ======================================================
+// BUILDENSE
+// script.js
+// ======================================================
 
-// Seletores
-const $ = (selector, scope = document) => scope.querySelector(selector);
-const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
+document.addEventListener("DOMContentLoaded", function () {
 
-
-// ===============================
-// LUCIDE ICONS
-// ===============================
-
-document.addEventListener("DOMContentLoaded", () => {
-  if (window.lucide) {
-    lucide.createIcons();
-  }
-});
-
-
-// ===============================
-// NAVBAR AO ROLAR A PÁGINA
-// ===============================
-
-const navbar = document.querySelector("#navbar");
-
-function atualizarNavbar() {
-  if (!navbar) return;
-
-  if (window.scrollY > 12) {
-    navbar.classList.add("scrolled");
-  } else {
-    navbar.classList.remove("scrolled");
-  }
-}
-
-window.addEventListener("scroll", atualizarNavbar);
-
-atualizarNavbar();
-
-
-// ===============================
-// MENU MOBILE
-// ===============================
-
-const menuToggle = document.querySelector("#menuToggle");
-const mobileMenu = document.querySelector("#mobileMenu");
-
-if (menuToggle && mobileMenu) {
-  menuToggle.addEventListener("click", () => {
-    const aberto = mobileMenu.classList.toggle("open");
-
-    menuToggle.setAttribute(
-      "aria-expanded",
-      aberto ? "true" : "false"
+    // ====================================================
+    // LUCIDE ICONS
+    // ====================================================
+  
+    if (typeof lucide !== "undefined") {
+      lucide.createIcons();
+    }
+  
+  
+    // ====================================================
+    // NAVBAR
+    // ====================================================
+  
+    const navbar =
+      document.getElementById("navbar");
+  
+    function updateNavbar() {
+  
+      if (!navbar) {
+        return;
+      }
+  
+      if (window.scrollY > 12) {
+  
+        navbar.classList.add(
+          "scrolled"
+        );
+  
+      } else {
+  
+        navbar.classList.remove(
+          "scrolled"
+        );
+  
+      }
+  
+    }
+  
+    window.addEventListener(
+      "scroll",
+      updateNavbar
     );
-
-    document.body.classList.toggle("menu-open", aberto);
-  });
-}
-
-
-// Fecha menu quando clicar em link
-document.querySelectorAll(".mobile-menu a").forEach(link => {
-  link.addEventListener("click", () => {
-    if (!mobileMenu || !menuToggle) return;
-
-    mobileMenu.classList.remove("open");
-
-    menuToggle.setAttribute(
-      "aria-expanded",
-      "false"
-    );
-
-    document.body.classList.remove("menu-open");
-  });
-});
-
-
-// Fecha menu ao aumentar a tela
-window.addEventListener("resize", () => {
-  if (window.innerWidth > 820) {
-    if (!mobileMenu || !menuToggle) return;
-
-    mobileMenu.classList.remove("open");
-
-    menuToggle.setAttribute(
-      "aria-expanded",
-      "false"
-    );
-
-    document.body.classList.remove("menu-open");
-  }
-});
-
-
-// ===============================
-// ANIMAÇÕES AO ROLAR
-// ===============================
-
-const revealItems = document.querySelectorAll(".reveal");
-
-if ("IntersectionObserver" in window) {
-
-  const observer = new IntersectionObserver(
-    entries => {
-
-      entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-          entry.target.classList.add("is-visible");
-
-          observer.unobserve(entry.target);
-
+  
+    updateNavbar();
+  
+  
+    // ====================================================
+    // MENU MOBILE
+    // ====================================================
+  
+    const menuToggle =
+      document.getElementById(
+        "menuToggle"
+      );
+  
+    const mobileMenu =
+      document.getElementById(
+        "mobileMenu"
+      );
+  
+  
+    if (
+      menuToggle &&
+      mobileMenu
+    ) {
+  
+      menuToggle.addEventListener(
+        "click",
+        function () {
+  
+          const open =
+            mobileMenu.classList.toggle(
+              "open"
+            );
+  
+          menuToggle.setAttribute(
+            "aria-expanded",
+            String(open)
+          );
+  
+          document.body.classList.toggle(
+            "menu-open",
+            open
+          );
+  
         }
-
-      });
-
-    },
-    {
-      threshold: 0.12,
-      rootMargin: "0px 0px -40px 0px"
+      );
+  
+  
+      const mobileLinks =
+        mobileMenu.querySelectorAll(
+          "a"
+        );
+  
+      mobileLinks.forEach(
+        function (link) {
+  
+          link.addEventListener(
+            "click",
+            function () {
+  
+              mobileMenu.classList.remove(
+                "open"
+              );
+  
+              document.body.classList.remove(
+                "menu-open"
+              );
+  
+              menuToggle.setAttribute(
+                "aria-expanded",
+                "false"
+              );
+  
+            }
+          );
+  
+        }
+      );
+  
     }
-  );
-
-
-  revealItems.forEach(item => {
-    observer.observe(item);
-  });
-
-} else {
-
-  revealItems.forEach(item => {
-    item.classList.add("is-visible");
-  });
-
-}
-
-
-// ===============================
-// FAQ
-// ===============================
-
-const faqItems = document.querySelectorAll(".faq-item");
-
-faqItems.forEach(item => {
-
-  const button = item.querySelector("button");
-
-  if (!button) return;
-
-  button.addEventListener("click", () => {
-
-    const estavaAberto =
-      item.classList.contains("open");
-
-
-    // Fecha todos
-    faqItems.forEach(faq => {
-      faq.classList.remove("open");
-    });
-
-
-    // Abre o selecionado
-    if (!estavaAberto) {
-      item.classList.add("open");
+  
+  
+    // ====================================================
+    // REVEAL AO SCROLL
+    // ====================================================
+  
+    const revealElements =
+      document.querySelectorAll(
+        ".reveal"
+      );
+  
+  
+    if (
+      "IntersectionObserver"
+      in window
+    ) {
+  
+      const observer =
+        new IntersectionObserver(
+          function (entries) {
+  
+            entries.forEach(
+              function (entry) {
+  
+                if (
+                  entry.isIntersecting
+                ) {
+  
+                  entry.target.classList.add(
+                    "is-visible"
+                  );
+  
+                  observer.unobserve(
+                    entry.target
+                  );
+  
+                }
+  
+              }
+            );
+  
+          },
+          {
+            threshold: 0.1,
+            rootMargin:
+              "0px 0px -40px 0px"
+          }
+        );
+  
+  
+      revealElements.forEach(
+        function (element) {
+  
+          observer.observe(
+            element
+          );
+  
+        }
+      );
+  
+    } else {
+  
+      revealElements.forEach(
+        function (element) {
+  
+          element.classList.add(
+            "is-visible"
+          );
+  
+        }
+      );
+  
     }
-
-  });
-
-});
-
-
-// ===============================
-// FORMULÁRIO
-// ===============================
-
-const form = document.querySelector("#contactForm");
-
-const successState =
-  document.querySelector("#successState");
-
-const resetButton =
-  document.querySelector("#resetForm");
-
-
-// Mostrar erro
-function mostrarErro(campo, mensagem) {
-
-  const elemento =
-    document.querySelector(
-      `[data-error="${campo}"]`
+  
+  
+    // ====================================================
+    // FAQ
+    // ====================================================
+  
+    const faqItems =
+      document.querySelectorAll(
+        ".faq-item"
+      );
+  
+  
+    faqItems.forEach(
+      function (item) {
+  
+        const button =
+          item.querySelector(
+            "button"
+          );
+  
+        if (!button) {
+          return;
+        }
+  
+  
+        button.addEventListener(
+          "click",
+          function () {
+  
+            const alreadyOpen =
+              item.classList.contains(
+                "open"
+              );
+  
+  
+            faqItems.forEach(
+              function (faq) {
+  
+                faq.classList.remove(
+                  "open"
+                );
+  
+              }
+            );
+  
+  
+            if (!alreadyOpen) {
+  
+              item.classList.add(
+                "open"
+              );
+  
+            }
+  
+          }
+        );
+  
+      }
     );
-
-  if (elemento) {
-    elemento.textContent = mensagem;
-  }
-
-}
-
-
-// Limpar erros
-function limparErros() {
-
-  const campos = [
-    "nome",
-    "contato",
-    "servico",
-    "mensagem"
-  ];
-
-  campos.forEach(campo => {
-    mostrarErro(campo, "");
-  });
-
-}
-
-
-// Validação formulário
-if (form) {
-
-  form.addEventListener("submit", event => {
-
-    event.preventDefault();
-
-    limparErros();
-
-
-    const dados = new FormData(form);
-
-
-    const nome =
-      String(
-        dados.get("nome") || ""
-      ).trim();
-
-
-    const contato =
-      String(
-        dados.get("contato") || ""
-      ).trim();
-
-
-    const servico =
-      String(
-        dados.get("servico") || ""
-      ).trim();
-
-
-    const mensagem =
-      String(
-        dados.get("mensagem") || ""
-      ).trim();
-
-
-    let possuiErro = false;
-
-
-    // Nome
-    if (nome.length < 2) {
-
-      mostrarErro(
+  
+  
+    // ====================================================
+    // BOTÕES DOS PLANOS
+    // ====================================================
+  
+    const planButtons =
+      document.querySelectorAll(
+        ".select-plan"
+      );
+  
+    const serviceSelect =
+      document.getElementById(
+        "serviceSelect"
+      );
+  
+  
+    planButtons.forEach(
+      function (button) {
+  
+        button.addEventListener(
+          "click",
+          function () {
+  
+            const service =
+              button.getAttribute(
+                "data-service"
+              );
+  
+  
+            if (
+              serviceSelect &&
+              service
+            ) {
+  
+              const options =
+                serviceSelect.options;
+  
+  
+              for (
+                let i = 0;
+                i < options.length;
+                i++
+              ) {
+  
+                if (
+                  options[i].value ===
+                  service
+                ) {
+  
+                  serviceSelect.selectedIndex =
+                    i;
+  
+                  break;
+  
+                }
+  
+              }
+  
+            }
+  
+  
+            const formSection =
+              document.getElementById(
+                "orcamento"
+              );
+  
+  
+            if (formSection) {
+  
+              formSection.scrollIntoView({
+                behavior: "smooth"
+              });
+  
+            }
+  
+          }
+        );
+  
+      }
+    );
+  
+  
+    // ====================================================
+    // FORMULÁRIO
+    // ====================================================
+  
+    const form =
+      document.getElementById(
+        "contactForm"
+      );
+  
+    const successState =
+      document.getElementById(
+        "successState"
+      );
+  
+    const resetButton =
+      document.getElementById(
+        "resetForm"
+      );
+  
+  
+    function showError(
+      field,
+      message
+    ) {
+  
+      const error =
+        document.querySelector(
+          '[data-error="' +
+          field +
+          '"]'
+        );
+  
+  
+      if (error) {
+  
+        error.textContent =
+          message;
+  
+      }
+  
+    }
+  
+  
+    function clearErrors() {
+  
+      showError(
         "nome",
-        "Informe seu nome."
+        ""
       );
-
-      possuiErro = true;
-    }
-
-
-    // Contato
-    if (contato.length < 8) {
-
-      mostrarErro(
+  
+      showError(
         "contato",
-        "Informe um WhatsApp ou e-mail válido."
+        ""
       );
-
-      possuiErro = true;
-    }
-
-
-    // Serviço
-    if (!servico) {
-
-      mostrarErro(
+  
+      showError(
         "servico",
-        "Selecione um serviço."
+        ""
       );
-
-      possuiErro = true;
-    }
-
-
-    // Mensagem
-    if (mensagem.length < 10) {
-
-      mostrarErro(
+  
+      showError(
         "mensagem",
-        "Conte um pouco mais sobre sua empresa."
+        ""
       );
-
-      possuiErro = true;
+  
     }
-
-
-    if (possuiErro) {
-      return;
+  
+  
+    if (form) {
+  
+      form.addEventListener(
+        "submit",
+        function (event) {
+  
+          event.preventDefault();
+  
+          clearErrors();
+  
+  
+          const data =
+            new FormData(form);
+  
+  
+          const nome =
+            String(
+              data.get("nome") ||
+              ""
+            ).trim();
+  
+  
+          const contato =
+            String(
+              data.get("contato") ||
+              ""
+            ).trim();
+  
+  
+          const servico =
+            String(
+              data.get("servico") ||
+              ""
+            ).trim();
+  
+  
+          const mensagem =
+            String(
+              data.get("mensagem") ||
+              ""
+            ).trim();
+  
+  
+          let errorFound =
+            false;
+  
+  
+          // NOME
+  
+          if (
+            nome.length < 2
+          ) {
+  
+            showError(
+              "nome",
+              "Informe seu nome."
+            );
+  
+            errorFound =
+              true;
+  
+          }
+  
+  
+          // CONTATO
+  
+          if (
+            contato.length < 8
+          ) {
+  
+            showError(
+              "contato",
+              "Informe um WhatsApp ou e-mail válido."
+            );
+  
+            errorFound =
+              true;
+  
+          }
+  
+  
+          // SERVIÇO
+  
+          if (
+            servico === ""
+          ) {
+  
+            showError(
+              "servico",
+              "Selecione uma opção."
+            );
+  
+            errorFound =
+              true;
+  
+          }
+  
+  
+          // MENSAGEM
+  
+          if (
+            mensagem.length < 10
+          ) {
+  
+            showError(
+              "mensagem",
+              "Conte um pouco mais sobre sua empresa."
+            );
+  
+            errorFound =
+              true;
+  
+          }
+  
+  
+          if (
+            errorFound
+          ) {
+  
+            return;
+  
+          }
+  
+  
+          form.style.display =
+            "none";
+  
+  
+          if (
+            successState
+          ) {
+  
+            successState.hidden =
+              false;
+  
+          }
+  
+        }
+      );
+  
     }
-
-
-    // Esconde formulário
-    form.hidden = true;
-
-
-    // Mostra mensagem de sucesso
-    if (successState) {
-      successState.hidden = false;
+  
+  
+    // ====================================================
+    // RESET FORM
+    // ====================================================
+  
+    if (
+      resetButton &&
+      form
+    ) {
+  
+      resetButton.addEventListener(
+        "click",
+        function () {
+  
+          form.reset();
+  
+          clearErrors();
+  
+  
+          form.style.display =
+            "flex";
+  
+  
+          if (
+            successState
+          ) {
+  
+            successState.hidden =
+              true;
+  
+          }
+  
+        }
+      );
+  
     }
-
+  
+  
+    // ====================================================
+    // ANO DO FOOTER
+    // ====================================================
+  
+    const year =
+      document.getElementById(
+        "currentYear"
+      );
+  
+  
+    if (year) {
+  
+      year.textContent =
+        new Date().getFullYear();
+  
+    }
+  
   });
-
-}
-
-
-// ===============================
-// RESET DO FORMULÁRIO
-// ===============================
-
-if (resetButton) {
-
-  resetButton.addEventListener("click", () => {
-
-    if (!form) return;
-
-
-    form.reset();
-
-    limparErros();
-
-
-    if (successState) {
-      successState.hidden = true;
-    }
-
-
-    form.hidden = false;
-
-  });
-
-}
-
-
-// ===============================
-// ANO AUTOMÁTICO NO FOOTER
-// ===============================
-
-const currentYear =
-  document.querySelector("#currentYear");
-
-if (currentYear) {
-
-  currentYear.textContent =
-    new Date().getFullYear();
-
-}
